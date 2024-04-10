@@ -16,6 +16,7 @@ type ExifRaw struct {
 	Model                 string   `json:"Model"`
 	PixelXDimension       []int    `json:"PixelXDimension"`
 	PixelYDimension       []int    `json:"PixelYDimension"`
+	Orientation           []int    `json:"Orientation"`
 	Software              string   `json:"Software"`
 	WhiteBalance          []int    `json:"WhiteBalance"`
 }

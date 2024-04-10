@@ -63,16 +63,27 @@ func (r *Subcommand) Run() error {
 			log.Fatal(err.Error())
 		}
 
+		// * Parse EXIF
 		metaData, err := exif.Decode(imgFile)
 		if err != nil {
 			log.Fatal(err.Error())
 		}
 
+		jsonByte, err := metaData.MarshalJSON()
+		if err != nil {
+			log.Fatal(err.Error())
+		}
+
+		var exifRaw *ExifRaw
+		err = json.Unmarshal(jsonByte, &exifRaw)
+
+		// * Reset file pointer
 		_, err = imgFile.Seek(0, 0)
 		if err != nil {
 			return err
 		}
 
+		// * Parse image
 		img, _, err := image.Decode(imgFile)
 		if err != nil {
 			log.Fatal(err.Error())
@@ -81,8 +92,26 @@ func (r *Subcommand) Run() error {
 		bounds := img.Bounds()
 		width := bounds.Dx()
 		height := bounds.Dy()
-		w := bounds.Dx()
-		h := bounds.Dy()
+
+		if exifRaw.Orientation != nil {
+			switch exifRaw.Orientation[0] {
+			case 1:
+				width = bounds.Dx()
+				height = bounds.Dy()
+			case 3:
+				width = bounds.Dx()
+				height = bounds.Dy()
+			case 6:
+				width = bounds.Dy()
+				height = bounds.Dx()
+			case 8:
+				width = bounds.Dy()
+				height = bounds.Dx()
+			}
+		}
+
+		w := width
+		h := height
 
 		for w >= 10 && h >= 10 {
 			w /= 10
@@ -100,14 +129,6 @@ func (r *Subcommand) Run() error {
 		if err != nil {
 			log.Fatal(err.Error())
 		}
-
-		jsonByte, err := metaData.MarshalJSON()
-		if err != nil {
-			log.Fatal(err.Error())
-		}
-
-		var exifRaw *ExifRaw
-		err = json.Unmarshal(jsonByte, &exifRaw)
 
 		t, err2 := time.Parse("2006:01:02 15:04:05 -0700", exifRaw.DateTimeOriginal+" +0700")
 		if err2 != nil {
