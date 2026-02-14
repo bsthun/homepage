@@ -30,7 +30,7 @@ func GetDscFiles(dir string) ([]fs.DirEntry, error) {
 	// * Filter only image files
 	var filtered []fs.DirEntry
 	for _, file := range files {
-		if !strings.HasPrefix(file.Name(), ".") {
+		if !strings.HasPrefix(file.Name(), ".") && strings.HasSuffix(strings.ToLower(file.Name()), ".jpg") {
 			filtered = append(filtered, file)
 		}
 	}

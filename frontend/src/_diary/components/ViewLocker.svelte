@@ -47,7 +47,7 @@
 		border: 1px #e1e4e8 solid;
 		border-radius: 6px;
 		width: calc(100% - 40px);
-		max-width: 956px;
+		max-width: 1156px;
 
 		display: flex;
 		flex-direction: column;

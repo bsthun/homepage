@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"command/modules/compare"
+	"command/modules/diary"
 	"command/modules/photo"
 	"command/types/common"
 )
@@ -25,6 +26,7 @@ func cmd(args []string) error {
 	cmds := []common.Subcommand{
 		photo.NewPhoto(),
 		compare.NewPhotoCompare(),
+		diary.NewDiary(),
 	}
 
 	subcommand := os.Args[1]

@@ -1,78 +1,97 @@
 <script lang="ts">
 	import Tooltip, { Wrapper, Title, Content, Link, RichActions } from '@smui/tooltip'
-	import { getContext, onMount } from 'svelte'
+	import { getContext } from 'svelte'
 	import type { Writable } from 'svelte/store'
-	import Container from '../../components/layout/Container.svelte'
+	import GraphTooltip from './GraphTooltip.svelte'
 
-	export let state: any
-	export let setYear: (any) => void
+	const local: Writable<any> = getContext('local')
+	const remote: Writable<any> = getContext('remote')
+	const action: Writable<any> = getContext('action')
 </script>
 
-<div class="wrapper">
-	<div class="heading">
-		<h3>Activity Graph</h3>
-		<Wrapper rich style="flex: 1">
-			<span class="material-symbols-outlined icon">help</span>
-			<Tooltip>
-				<Content style="width: 260px">
-					3 aspects of daily activity represented<br />in the color mixture of each squares.
-					<div class="r-1">
-						<div class="preview-square" style="background-color: dodgerblue" />
-						Self
-					</div>
-					<div class="r-1">
-						<div class="preview-square" style="background-color: forestgreen" />
-						Social
-					</div>
-					<div class="r-1">
-						<div class="preview-square" style="background-color: indianred" />
-						Work
-					</div>
-				</Content>
-			</Tooltip>
-		</Wrapper>
-		<select label="Activity Year" on:change={(e) => setYear(e.target.value)}>
-			{#each state.local.yearOptions as year}
-				<option value={year} selected={year === state.local.year}>{year}</option>
-			{/each}
-		</select>
-	</div>
-	<div class="graph">
-		<div class="months">
-			<span>Jan</span>
-			<span>Feb</span>
-			<span>Mar</span>
-			<span>Apr</span>
-			<span>May</span>
-			<span>Jun</span>
-			<span>Jul</span>
-			<span>Aug</span>
-			<span>Sep</span>
-			<span>Oct</span>
-			<span>Nov</span>
-			<span>Dec</span>
+<div class="graph">
+	<div class="wrapper">
+		<div class="heading">
+			<h3>Activity Graph</h3>
+			<Wrapper rich style="flex: 1">
+				<span class="material-symbols-outlined icon">help</span>
+				<Tooltip>
+					<Content style="width: 260px">
+						3 aspects of daily score represented<br />in the color mixture of each squares.
+						<div class="r-1">
+							<div class="preview-square" style="background-color: dodgerblue" />
+							Gain
+							<span class="preview-desc">Experienced something new</span>
+						</div>
+						<div class="r-1">
+							<div class="preview-square" style="background-color: forestgreen" />
+							Emotional
+							<span class="preview-desc">Feeling / Enjoyment / Mood</span>
+						</div>
+						<div class="r-1">
+							<div class="preview-square" style="background-color: indianred" />
+							Productivity
+							<span class="preview-desc">Things accomplished</span>
+						</div>
+					</Content>
+				</Tooltip>
+			</Wrapper>
+			<select on:change={(e) => $action.setYear(e.target.value)}>
+				{#each $local.yearOptions as year}
+					<option value={year} selected={year === $local.year}>{year}</option>
+				{/each}
+			</select>
 		</div>
-		<ul class="squares">
-			{#each state.remote.days_graph as day, i}
-				{#if i === 0}
-					<div
-						style={`background-color: #${day?.toString(16).padStart(6, '0')};
-						grid-row-start: ${state.local.firstDayOffset}`}
-					/>
-				{:else}
-					<div style={`background-color: #${day?.toString(16).padStart(6, '0')}`} />
-				{/if}
-			{/each}
-		</ul>
+		<div class="graph">
+			<div class="months">
+				<span>Jan</span>
+				<span>Feb</span>
+				<span>Mar</span>
+				<span>Apr</span>
+				<span>May</span>
+				<span>Jun</span>
+				<span>Jul</span>
+				<span>Aug</span>
+				<span>Sep</span>
+				<span>Oct</span>
+				<span>Nov</span>
+				<span>Dec</span>
+			</div>
+			<ul class="squares">
+				{#each $remote.days as day, i}
+					{#if i === 0}
+						<div
+							contenteditable
+							class={`square ${$local.activeGraph?.day.date === day.date ? 'active' : ''}`}
+							style={`background-color: #${day.graph?.toString(16).padStart(6, '0')};
+								grid-row-start: ${$local.firstDayOffset}`}
+							on:blur={() => $action.clearActiveGraph()}
+							on:click={(ev) => $action.setActiveGraph(ev, day)}
+							on:keypress={(ev) => $action.setActiveGraph(ev, day)}
+						/>
+					{:else}
+						<div
+							contentEditable
+							class={`square ${$local.activeGraph?.day.date === day.date ? 'active' : ''}`}
+							style={`background-color: #${day.graph?.toString(16).padStart(6, '0')}`}
+							on:blur={() => $action.clearActiveGraph()}
+							on:click={(ev) => $action.setActiveGraph(ev, day)}
+							on:keypress={(ev) => $action.setActiveGraph(ev, day)}
+						/>
+					{/if}
+				{/each}
+			</ul>
+		</div>
 	</div>
+	<GraphTooltip />
 </div>
 
 <style lang="scss">
 	@import '../../styles/index';
 
-	$gap: 4px;
-	$square-size: 14px;
-	$week-width: 18px;
+	$gap: 6px;
+	$square-size: 16px;
+	$week-width: 22px;
 
 	.wrapper {
 		padding: 20px;
@@ -80,8 +99,9 @@
 		border: 1px #e1e4e8 solid;
 		border-radius: 6px;
 		width: calc(100% - 40px);
-		max-width: 956px;
+		max-width: 1156px;
 		overflow-x: scroll;
+		overflow-y: visible;
 	}
 
 	.heading {
@@ -101,6 +121,13 @@
 		width: 14px;
 		height: 14px;
 		margin-right: 6px;
+	}
+
+	.preview-desc {
+		margin: 0 0 0 6px;
+		opacity: 0.6;
+		font-size: 0.8em;
+		line-height: 1em;
 	}
 
 	.graph {
@@ -143,9 +170,23 @@
 		grid-template-rows: repeat(7, $square-size);
 		grid-auto-flow: column;
 		grid-auto-columns: $square-size;
+	}
 
-		> div {
-			border-radius: 2px;
+	.square {
+		border-radius: 2px;
+		width: 100%;
+		height: 100%;
+		cursor: pointer;
+		caret-color: transparent;
+		border: 1px #a1a4a800 solid;
+
+		&:hover {
+			border: 1px #a1a4a8aa solid;
+		}
+
+		&:active,
+		&.active {
+			border: 1px #a1a4a8ff solid;
 		}
 	}
 </style>
