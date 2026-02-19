@@ -1,0 +1,15 @@
+# local
+.local
+
+# generate
+/generate
+/build
+zzz.go
+
+# template
+/.claude/**/polygon-*.md
+/CLAUDE.md
+/makefile
+/docker-compose.yml
+/sqlc.yml
+/.mockery.yml

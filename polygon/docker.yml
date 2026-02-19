@@ -1,0 +1,5 @@
+services:
+    postgres:
+        variableInput:
+            name: homepage
+            postgresPassword: homepage1

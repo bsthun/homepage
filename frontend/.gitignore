@@ -1,0 +1,19 @@
+# environment
+.env
+.env.*
+
+# generate
+/src/util/backend
+/src/lib/shadcn/components
+
+# log
+*.log
+
+# dependency
+node_modules/
+dist/
+*.local
+
+# template
+/.claude/**/polygon-*.md
+/CLAUDE.md

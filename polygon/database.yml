@@ -1,0 +1,149 @@
+dialect: postgresql
+migrations: backend/database/migration
+output: backend/generate/polygon/database
+tables:
+    blog_items:
+        fields:
+            - name: id
+              features: []
+            - name: blog_series_id
+              features: []
+            - name: title
+              features: []
+            - name: description
+              features: []
+            - name: is_video
+              features: []
+            - name: publish_duration
+              features: []
+            - name: referred_at
+              features: []
+            - name: created_at
+              features: []
+            - name: updated_at
+              features: []
+        additions: []
+    blog_section_revisions:
+        fields:
+            - name: id
+              features: []
+            - name: blog_section_id
+              features: []
+            - name: change
+              features: []
+            - name: created_at
+              features: []
+        additions: []
+    blog_sections:
+        fields:
+            - name: id
+              features: []
+            - name: blog_item_id
+              features: []
+            - name: title
+              features: []
+            - name: content
+              features: []
+            - name: spotify_track_id
+              features: []
+            - name: spotify_start
+              features: []
+            - name: created_at
+              features: []
+            - name: updated_at
+              features: []
+        additions: []
+    blog_series:
+        fields:
+            - name: id
+              features: []
+            - name: name
+              features: []
+            - name: created_at
+              features: []
+            - name: updated_at
+              features: []
+        additions: []
+    blog_tags:
+        fields:
+            - name: id
+              features: []
+            - name: name
+              features: []
+            - name: created_at
+              features: []
+            - name: updated_at
+              features: []
+        additions: []
+    dairies:
+        fields:
+            - name: id
+              features: []
+            - name: user_id
+              features: []
+            - name: content
+              features: []
+            - name: graph_emotional
+              features: []
+            - name: graph_productivity
+              features: []
+            - name: graph_interaction
+              features: []
+            - name: graph_wellness
+              features: []
+            - name: created_at
+              features: []
+            - name: updated_at
+              features: []
+        additions: []
+    dairy_attachments:
+        fields:
+            - name: id
+              features: []
+            - name: dairy_id
+              features: []
+            - name: type
+              features: []
+            - name: referred_at
+              features: []
+            - name: created_at
+              features: []
+            - name: updated_at
+              features: []
+        additions: []
+    sessions:
+        fields:
+            - name: id
+              features: []
+            - name: user_id
+              features: []
+            - name: metadata
+              features: []
+            - name: created_at
+              features: []
+            - name: updated_at
+              features: []
+        additions: []
+    users:
+        fields:
+            - name: id
+              features: []
+            - name: username
+              features: []
+            - name: firstname
+              features: []
+            - name: lastname
+              features: []
+            - name: email
+              features: []
+            - name: picture_url
+              features: []
+            - name: is_admin
+              features: []
+            - name: metadata
+              features: []
+            - name: created_at
+              features: []
+            - name: updated_at
+              features: []
+        additions: []
